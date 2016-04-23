@@ -43,6 +43,7 @@ To upload a saved set of lunch club groupings:
 ```sh
 $ lunchclub generate > grouping.txt
 $ lunchclub commit grouping.txt
+Uploaded file to s3://br-app-prod/lunch/club/pairs/20160422-211439.tsv
 ```
 
 or use the unix `-` flag to pipe it directly in
