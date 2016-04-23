@@ -34,7 +34,7 @@ def generate(n):
 
 
 @cli.command()
-@click.argument('input', type=click.File('rb'))
+@click.argument('input', type=click.File('r'))
 @click.option('--date', type=str)
 def commit(input, date):
     if date is None:
@@ -46,9 +46,7 @@ def commit(input, date):
             raise ValueError("Date must be of format YYYYMMDD: %s" % date)
 
     str_ = input.read()
-
     upload_s3path = os.path.join(config.LUNCH_CLUB_PAIRINGS, date.strftime('%Y%m%d-%H%M%S') + '.tsv')
-
     response = lunchclub.upload_bytes_to_s3(upload_s3path, str_)
     http_status = response['ResponseMetadata']['HTTPStatusCode']
     if http_status == 200:
