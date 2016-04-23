@@ -4,14 +4,14 @@ This is a command line tool for managing lunch club pairings.
 
 ## Setup:
 
-This will clone the repository onto your computer and create a script called `lunchclub`
+To clone the repository onto your computer and create a script called `lunchclub`:
+
 ```sh
 git clone ssh://git@repo.bloomreach.com:8443/da/lunchclub.git
 cd lunchclub
 pip install -r requirements.txt
 python setup.py install
 ```
-
 
 ## Usage
 
@@ -39,6 +39,7 @@ ramya.sampath   steven.boone    ashutosh        hank
 ```
 
 To upload a saved set of lunch club groupings:
+
 ```sh
 $ lunchclub generate > grouping.txt
 $ lunchclub commit grouping.txt
