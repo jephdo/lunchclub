@@ -6,6 +6,7 @@ from datetime import datetime
 
 from lunchclub import lunchclub
 from lunchclub.config import config
+from lunchclub.io import read_members, get_previous_pairs, upload_bytes_to_s3
 
 
 logger = logging.getLogger(__name__)
@@ -25,12 +26,16 @@ def cli(verbose):
 
 @cli.command()
 @click.option('--n', type=int, help="Minimum group size of lunch club groups")
-def generate(n):
+@click.option('--departments', is_flag=True, help="Show department names along with usernames")
+@click.option('--previous', is_flag=True, help="Download previous pairings and consider that when generating lunch groups")
+def generate(n, departments, previous):
     group_size = n
-    users = lunchclub.read_members(config.LUNCH_CLUB_MEMBERS)
-    groups = lunchclub.secret_algorithm(users, group_size or config.DEFAULT_GROUP_SIZE)
+    users = read_members(config.LUNCH_CLUB_MEMBERS)
+    previous_matches = get_previous_pairs() if previous else None
+    groups = lunchclub.secret_algorithm(users, group_size or config.DEFAULT_GROUP_SIZE, previous_matches)
+
     for group in groups:
-        click.echo('\t'.join(group))
+        click.echo(group.to_string(show_department=departments))
 
 
 @cli.command()
@@ -45,9 +50,10 @@ def commit(input, date):
         except ValueError:
             raise ValueError("Date must be of format YYYYMMDD: %s" % date)
 
-    str_ = input.read()
-    upload_s3path = os.path.join(config.LUNCH_CLUB_PAIRINGS, date.strftime('%Y%m%d-%H%M%S') + '.tsv')
-    response = lunchclub.upload_bytes_to_s3(upload_s3path, str_)
+    bytes_ = input.read()
+    # '%Y%m%d-%H%M%S'
+    upload_s3path = os.path.join(config.LUNCH_CLUB_PAIRINGS, date.strftime('%Y%m%d') + '.tsv')
+    response = upload_bytes_to_s3(upload_s3path, bytes_)
     http_status = response['ResponseMetadata']['HTTPStatusCode']
     if http_status == 200:
         click.echo("Uploaded file to %s" % upload_s3path)
