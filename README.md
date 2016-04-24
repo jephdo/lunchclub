@@ -58,18 +58,18 @@ yue.yu|eng      darryl|pem
 ...
 ```
 
-A history of all lunch club groupings and pairings is kept at `s3://br-app-prod/lunch/club/pairs/`. To upload a saved set of lunch club groupings (so that in the future the algorithm can consider previous pairings when determining lunch groups):
+A history of all lunch club groupings and pairings is kept at `s3://br-app-prod/lunch/club/pairs/`. The algorithm will consider previous pairs of users if you use the `--previous` flag. To upload a saved set of lunch club groupings (so that in the future the algorithm can consider previous pairings when determining lunch groups):
 
 ```sh
-$ lunchclub generate > grouping.txt
-$ lunchclub commit grouping.txt
+$ lunchclub generate --previous > lunchgroups.txt
+$ lunchclub commit lunchgroups.txt
 Uploaded file to s3://br-app-prod/lunch/club/pairs/20160422-211439.tsv
 ```
 
 or just:
 
 ```sh
-$ lunchclub generate | lunchclub commit -
+$ lunchclub generate --previous | lunchclub commit -
 Uploaded file to s3://br-app-prod/lunch/club/pairs/20160422-211439.tsv
 ```
 
