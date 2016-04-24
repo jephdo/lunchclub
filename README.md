@@ -13,6 +13,8 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
+It's better to do this in a virtual environment. Also works on both Python 2 and Python 3.
+
 ## Usage
 
 To create lunch club groups (default group size is three):
@@ -26,19 +28,26 @@ srinivas.nagaraju       stephen.disibio veronica.chen
 ...
 ```
 
-This prints out names delimited by tabs with a different group on each line. To 
+This prints out names delimited by tabs with a different group on each line. To show department names use `--d` flag. And to 
 create lunch club groups of different sizes use the `--n` option:
 
 ```sh
-$ lunchclub generate --n 4
-navin   stormy  joelle  jeff.tai
-romil   mike.cassidy    leonard.bui     chitra.v        jeff
-renuka.khandelwal       yue.yu  meredith.gadoury        teresa.lau
-ramya.sampath   steven.boone    ashutosh        hank
+$ lunchclub generate --n 4 --d
+shreyas.sali|eng        manisha.taparia|pem     clint|sales     nitin.sharma|eng
+udbhav.singh|eng        tanya.rai|pem   jeff.tai|sdr    navin|eng
+yue.yu|eng      michele.mcdonald|finance        jeff|sales      ramya.sampath|eng
+muhammad|eng    mrin.patil|pem  alyssa.clang|talent     vibhaakar.sharma|eng
+...
+$ lunchclub generate --n 2 --d
+ramya.sampath|eng       george.moxom|pem
+sona.parikh|pem lakshmi.menon|tpm
+jurgen.philippaerts|eng clint|sales
+tanya.rai|pem   ronak.vora|eng
+yue.yu|eng      darryl|pem
 ...
 ```
 
-To upload a saved set of lunch club groupings:
+A history of all lunch club groupings and pairings is kept at `s3://br-app-prod/lunch/club/pairs/`. To upload a saved set of lunch club groupings (so that in the future the algorithm can consider previous pairings when determining lunch groups):
 
 ```sh
 $ lunchclub generate > grouping.txt
@@ -46,12 +55,16 @@ $ lunchclub commit grouping.txt
 Uploaded file to s3://br-app-prod/lunch/club/pairs/20160422-211439.tsv
 ```
 
-or use the unix `-` flag to pipe it directly in
+or just:
 
 ```sh
 $ lunchclub generate | lunchclub commit -
 Uploaded file to s3://br-app-prod/lunch/club/pairs/20160422-211439.tsv
 ```
 
-A history of all lunch club groupings and pairings is kept at `s3://br-app-prod/lunch/club/pairs/`. 
+## Methodology For Picking Lunch Groups
+
+to do
+
+
 
