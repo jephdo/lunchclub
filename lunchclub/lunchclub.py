@@ -142,7 +142,8 @@ class Departments:
             members = Member.from_list(member_names, dept)
             if previous_matches is not None:
                 for m in members:
-                    m.add_previous_matches(previous_matches[m.username])
+                    if m.username in previous_matches:
+                        m.add_previous_matches(previous_matches[m.username])
             departments.append(cls(dept, members))
         return departments
     
