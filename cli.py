@@ -1,6 +1,7 @@
 import os
 import click
 import logging
+import random
 
 from datetime import datetime
 
@@ -26,8 +27,8 @@ def cli(verbose):
 
 @cli.command()
 @click.option('--n', type=int, help="Minimum group size of lunch club groups")
-@click.option('--departments', is_flag=True, help="Show department names along with usernames")
-@click.option('--previous', is_flag=True, help="Download previous pairings and consider that when generating lunch groups")
+@click.option('--departments', '-d', is_flag=True, help="Show department names along with usernames")
+@click.option('--previous', '-p', is_flag=True, help="Download previous pairings and consider that when generating lunch groups")
 def generate(n, departments, previous):
     group_size = n
     users = read_members(config.LUNCH_CLUB_MEMBERS)
@@ -59,6 +60,24 @@ def commit(input, date):
         click.echo("Uploaded file to %s" % upload_s3path)
     else:
         click.echo("Failed to upload file: %s" % str(response))
+
+@cli.command()
+@click.argument('input', type=click.File('r'))
+def show(input):
+    users = {u + '@bloomreach.com': v for u, v in read_members(config.LUNCH_CLUB_MEMBERS).items()}
+    str_ = input.read()
+
+    accumulated = []
+    for line in str_.split('\n'):
+        if not line:
+            continue
+        members = list(map(lambda u: u + '@bloomreach.com', line.strip().split('\t')))
+        random.shuffle(members)
+        click.echo('    '.join(list(map(lambda u: u + ' | ' + users[u], members))))
+        accumulated.extend(members)
+
+    click.echo('\n\n')
+    click.echo(','.join(sorted(accumulated)))
 
 
 if __name__ == '__main__':
